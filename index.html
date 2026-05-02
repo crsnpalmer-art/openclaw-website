@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Workflow Automation Playbook</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="A reusable playbook for local-first workflow automation: inputs, routing, guardrails, customer-service intake, verification, and human review.">
+<meta property="og:title" content="Workflow Automation Playbook">
+<meta property="og:description" content="A reusable playbook for local-first workflow automation: inputs, routing, guardrails, customer-service intake, verification, and human review.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://openclaw-viz-mu.vercel.app/">
+<meta property="og:image" content="https://openclaw-viz-mu.vercel.app/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Workflow Automation Playbook">
+<meta name="twitter:description" content="A reusable playbook for local-first workflow automation: inputs, routing, guardrails, customer-service intake, verification, and human review.">
+<meta name="twitter:image" content="https://openclaw-viz-mu.vercel.app/og-image.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Caveat:wght@400;600&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Space+Grotesk:wght@400;500;700&family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rp-bg: #e7e1d3;
+    --rp-paper: #f6f0e1;
+    --rp-ink: #0f0d0b;
+    --rp-muted: #524a3c;
+    --rp-blue: #1f3a8a;
+    --rp-pink: #8a2a2a;
+    --rp-yellow: #c69a2c;
+  }
+  html[data-mode="dark"] {
+    --rp-bg: #141210;
+    --rp-paper: #1c1a16;
+    --rp-ink: #ece5d0;
+    --rp-muted: #988e79;
+  }
+  html[data-accents="ironwork"] { --rp-blue: #1f3a8a; --rp-pink: #8a2a2a; --rp-yellow: #c69a2c; }
+  html[data-accents="workshop"] { --rp-blue: #2c4a3a; --rp-pink: #8a4a1a; --rp-yellow: #b08a3a; }
+  html[data-accents="dispatch"] { --rp-blue: #1a2a4a; --rp-pink: #6a2a2a; --rp-yellow: #b0894a; }
+  html[data-accents="blueprint"] { --rp-blue: #102a54; --rp-pink: #7a3020; --rp-yellow: #8a6a2a; }
+
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--rp-bg); color: var(--rp-ink);
+    font-family: "Inter", sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  html[data-fonts="space+space"] { --rp-display-override: "Space Grotesk", sans-serif; --rp-body-override: "Space Grotesk", sans-serif; }
+  html[data-fonts="syne+inter"]  { --rp-display-override: "Syne", sans-serif; --rp-body-override: "Inter", sans-serif; }
+  html[data-fonts="space+space"] h1, html[data-fonts="space+space"] h2, html[data-fonts="space+space"] h3 { font-family: var(--rp-display-override) !important; font-weight: 700 !important; }
+  html[data-fonts="syne+inter"] h1, html[data-fonts="syne+inter"] h2, html[data-fonts="syne+inter"] h3 { font-family: var(--rp-display-override) !important; font-weight: 800 !important; }
+
+  html[data-density="compact"] section { padding-top: 50px !important; padding-bottom: 50px !important; }
+  html[data-density="spacious"] section { padding-top: 110px !important; padding-bottom: 110px !important; }
+
+  button { color: inherit; }
+  * { box-sizing: border-box; }
+  a { -webkit-tap-highlight-color: transparent; }
+
+  @media (max-width: 900px) {
+    body { overflow-x: hidden; }
+    .mobile-hide { display: none !important; }
+  }
+
+  @media (max-width: 720px) {
+    section { padding-left: 20px !important; padding-right: 20px !important; }
+    h1 { font-size: clamp(50px, 17vw, 82px) !important; letter-spacing: -2.5px !important; }
+    h2 { font-size: clamp(42px, 14vw, 72px) !important; letter-spacing: -2px !important; }
+    h3 { font-size: clamp(30px, 10vw, 48px) !important; }
+  }
+
+  .tweaks-fab {
+    position: fixed; bottom: 16px; right: 16px; z-index: 99;
+    background: var(--rp-yellow); border: 2.5px solid var(--rp-ink);
+    box-shadow: 4px 4px 0 var(--rp-ink);
+    padding: 10px 16px; cursor: pointer;
+    font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--rp-ink);
+  }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="rp-base.jsx"></script>
+<script type="text/babel" src="rp-hero.jsx"></script>
+<script type="text/babel" src="rp-workflow.jsx"></script>
+<script type="text/babel" src="rp-workflow-images.jsx"></script>
+<script type="text/babel" src="rp-sarah.jsx"></script>
+<script type="text/babel" src="rp-cron-clock.jsx"></script>
+<script type="text/babel" src="rp-graph.jsx"></script>
+<script type="text/babel" src="rp-apps.jsx"></script>
+<script type="text/babel" src="rp-footer.jsx"></script>
+
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accents": "ironwork",
+    "fonts": "archivo+inter",
+    "density": "standard",
+    "mode": "light",
+    "hero": "splash"
+  }/*EDITMODE-END*/;
+
+  function App() {
+    const [config, setConfig] = React.useState(TWEAK_DEFAULTS);
+    const [tweaksOn, setTweaksOn] = React.useState(false);
+    const [tweaksOpen, setTweaksOpen] = React.useState(true);
+
+    // Apply config to <html> for CSS-var swaps
+    React.useEffect(() => {
+      const h = document.documentElement;
+      h.setAttribute('data-accents', config.accents);
+      h.setAttribute('data-fonts', config.fonts);
+      h.setAttribute('data-density', config.density);
+      h.setAttribute('data-mode', config.mode);
+      h.setAttribute('data-hero', config.hero);
+    }, [config]);
+
+    // Tweak-mode protocol
+    React.useEffect(() => {
+      const onMsg = (e) => {
+        const d = e.data || {};
+        if (d.type === '__activate_edit_mode') { setTweaksOn(true); setTweaksOpen(true); }
+        else if (d.type === '__deactivate_edit_mode') setTweaksOn(false);
+      };
+      window.addEventListener('message', onMsg);
+      window.parent.postMessage({ type: '__edit_mode_available' }, '*');
+      return () => window.removeEventListener('message', onMsg);
+    }, []);
+
+    const updateConfig = (next) => {
+      setConfig(next);
+      window.parent.postMessage({ type: '__edit_mode_set_keys', edits: next }, '*');
+    };
+
+    return (
+      <div>
+        <Hero density={config.density} variant={config.hero} />
+        <WorkflowExplainer />
+        <InteractiveWorkflowImages />
+        <Scheduler />
+        <CronSchedule />
+        <CronRegistry />
+        <LaunchdRegistry />
+        <Sarah />
+        <Services />
+        <Graph />
+        <Apps />
+        <Footer />
+        <TOC />
+        {tweaksOn && !tweaksOpen && (
+          <button className="tweaks-fab" onClick={() => setTweaksOpen(true)}>⚙ Tweaks</button>
+        )}
+        {tweaksOn && tweaksOpen && (
+          <TweaksPanel config={config} setConfig={updateConfig} onClose={() => setTweaksOpen(false)} />
+        )}
+      </div>
+    );
+  }
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>
