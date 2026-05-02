@@ -3,37 +3,37 @@
 
 const GRAPH_NODES = [
   // col 0 — triggers
-  { id: 'cron', col: 0, row: 0, label: 'Scheduler', kind: 'trigger', blurb: 'Recurring work with named owners and clear lanes. The public view shows the shape of the system, not the private job registry.' },
-  { id: 'launchd', col: 0, row: 1, label: 'macOS services', kind: 'trigger', blurb: 'Always-on platform services and script-heavy jobs that do not need an agent turn. Counts and private service names stay out of the public view.' },
+  { id: 'cron', col: 0, row: 0, label: 'Scheduler', kind: 'trigger', blurb: 'Recurring work with named owners and clear lanes. The point is the shape: owner, cadence, reason.' },
+  { id: 'launchd', col: 0, row: 1, label: 'System services', kind: 'trigger', blurb: 'Always-on platform checks and script-heavy jobs that do not need an agent turn.' },
   { id: 'tg', col: 0, row: 2, label: 'Telegram', kind: 'trigger', blurb: 'Operator surface and delivery sink. Human commands come in there; summaries and alerts go back out there.' },
   { id: 'voice', col: 0, row: 3, label: 'Inbound Call', kind: 'trigger', blurb: 'An inbound leasing call is answered, classified, and routed into the right handoff path.' },
-  { id: 'gmail-watch', col: 0, row: 4, label: 'Gmail Watch', kind: 'trigger', blurb: 'Push notifications on monitored inboxes — classify, route to the owning lane, draft or queue. This watcher is live now.' },
+  { id: 'gmail-watch', col: 0, row: 4, label: 'Inbox watch', kind: 'trigger', blurb: 'Inbox updates become work items: classify, route to the owning lane, draft or queue.' },
 
   // col 1 — orchestrator
-  { id: 'gateway', col: 1, row: 1.5, label: 'Gateway', kind: 'core', blurb: 'Local runtime gateway behind a hardened wrapper. It is live now, loads environment, chooses the right workspace, then hands off to the runtime entrypoint.' },
-  { id: 'core', col: 1, row: 3, label: 'Workflow Runtime', kind: 'core', blurb: 'The runtime proper: a main operator, specialist lanes, long-running context, and tool routing across interactive, scheduled, and review workspaces.' },
+  { id: 'gateway', col: 1, row: 1.5, label: 'Gateway', kind: 'core', blurb: 'The local entry point. It validates the setup, chooses the right lane, and makes the handoff observable.' },
+  { id: 'core', col: 1, row: 3, label: 'Workflow Runtime', kind: 'core', blurb: 'The place where incoming work is routed to the right owner: interactive work, scheduled work, review, or a tool call.' },
 
   // col 2 — agents (the real roster)
-  { id: 'main', col: 2, row: 0, label: 'main', kind: 'agent', blurb: 'Default operator. Interactive control lane, direct user work, and general orchestration.' },
-  { id: 'eddie', col: 2, row: 1, label: 'Eddie Morra', kind: 'agent', blurb: 'Work lane. Property workflows, AppFolio sync, work-order notifications, occupancy reporting.' },
-  { id: 'burry', col: 2, row: 2, label: 'Michael Burry', kind: 'agent', blurb: 'Finance lane. Weekly P&L readouts and finance-specific analysis.' },
-  { id: 'tony', col: 2, row: 3, label: 'Tony Montana', kind: 'agent', blurb: 'Collections lane. Delinquency follow-up and collection pressure workflows.' },
-  { id: 'zero', col: 2, row: 4, label: 'Guardian Zero', kind: 'agent', blurb: 'Ops lane. Cleanup, monitoring, log writing, and reliability chores orbit here while watchdogs moved to launchd.' },
-  { id: 'monk', col: 2, row: 5, label: 'Archive Monk', kind: 'agent', blurb: 'Archive lane. Review, context upkeep, and self-improvement passes.' },
+  { id: 'main', col: 2, row: 0, label: 'Control lane', kind: 'agent', blurb: 'Default operator. Interactive control, direct user work, and general orchestration.' },
+  { id: 'eddie', col: 2, row: 1, label: 'Property ops lane', kind: 'agent', blurb: 'Property workflows, AppFolio sync, work-order notifications, occupancy reporting.' },
+  { id: 'burry', col: 2, row: 2, label: 'Finance lane', kind: 'agent', blurb: 'Weekly P&L readouts and finance-specific analysis.' },
+  { id: 'tony', col: 2, row: 3, label: 'Collections lane', kind: 'agent', blurb: 'Delinquency follow-up, payment-plan review, and no-send collection drafts.' },
+  { id: 'zero', col: 2, row: 4, label: 'Reliability lane', kind: 'agent', blurb: 'Cleanup, monitoring, log writing, and reliability chores.' },
+  { id: 'monk', col: 2, row: 5, label: 'Review lane', kind: 'agent', blurb: 'Archive review, context upkeep, and self-improvement passes.' },
 
   // col 3 — model roles
   { id: 'reasoning', col: 3, row: 0.5, label: 'Reasoning', kind: 'model', blurb: 'Drafts, judgments, planning, and the hard calls.' },
   { id: 'coding', col: 3, row: 1.5, label: 'Coding', kind: 'model', blurb: 'Building and maintaining scripts, dashboards, apps, and runtime glue.' },
-  { id: 'search', col: 3, row: 2.5, label: 'Context search', kind: 'model', blurb: 'Retrieval layer for finding the right prior context without exposing the private archive.' },
+  { id: 'search', col: 3, row: 2.5, label: 'Context search', kind: 'model', blurb: 'Retrieval layer for finding the right prior context before taking action.' },
   { id: 'fast', col: 3, row: 3.5, label: 'Fast classification', kind: 'model', blurb: 'Classification, extraction, and high-frequency ops work.' },
 
   // col 4 — services
   { id: 'appfolio', col: 4, row: 0, label: 'AppFolio', kind: 'service', blurb: 'Property backbone — tenants, occupancy, work orders, vendors, reporting.' },
   { id: 'gmail', col: 4, row: 1, label: 'Gmail / Google', kind: 'service', blurb: 'Ingress + data layer — Gmail watch, inbox checks, Workspace docs, Sheets-backed queues for Sarah.' },
-  { id: 'notion', col: 4, row: 2, label: 'Notion', kind: 'service', blurb: 'Dashboards, Morra newsletter publishing, delinquency sync.' },
+  { id: 'notion', col: 4, row: 2, label: 'Notion', kind: 'service', blurb: 'Dashboards, publishing, review notes, and reporting surfaces.' },
   { id: 'sarah', col: 4, row: 3, label: 'Sarah (voice)', kind: 'service', blurb: 'Voice subsystem: telephony, voice AI, a backend layer, knowledge retrieval, and operator handoff. Inbound only.' },
-  { id: 'motion', col: 4, row: 4, label: 'Motion', kind: 'service', blurb: 'Task creation around delinquency workflows. Called from Tony\'s lane.' },
-  { id: 'rply', col: 4, row: 5, label: 'RPLY', kind: 'service', blurb: 'Launchd-owned reminder sidecar for business-text audiences. The old reminder row is now disabled and vestigial.' },
+  { id: 'motion', col: 4, row: 4, label: 'Motion', kind: 'service', blurb: 'Task creation around follow-up workflows.' },
+  { id: 'rply', col: 4, row: 5, label: 'RPLY', kind: 'service', blurb: 'Reminder sidecar for business-text audiences.' },
 ];
 
 const GRAPH_EDGES = [
@@ -117,7 +117,7 @@ function Graph() {
           Triggers → gateway →<br/>agents → models → services.
         </h2>
         <p style={{ margin: '18px 0 0', fontSize: 16, lineHeight: 1.55, fontFamily: RP.body, color: 'var(--rp-muted)', maxWidth: '62ch' }}>
-          The point of this map is ownership, not internals: recurring jobs have clear lanes, platform services handle the always-on parts, and each node below shows its immediate relationships without exposing the whole wiring closet.
+          The point of this map is ownership, not internals: work comes in, a lane owns it, tools are called only when needed, and anything risky stays reviewable.
         </p>
 
         <div style={{
@@ -125,8 +125,7 @@ function Graph() {
           border: '2px dashed var(--rp-ink)', background: 'rgba(255,255,255,0.24)',
           fontFamily: RP.body, fontSize: 15, lineHeight: 1.55, color: 'var(--rp-muted)',
         }}>
-          <strong style={{ color: 'var(--rp-ink)' }}>Plain-English version:</strong> jobs come in, the gateway routes them,
-          the right lane decides what to do, and outside services only get called when needed.
+          <strong style={{ color: 'var(--rp-ink)' }}>Plain-English version:</strong> turn inputs into owned work before any tool starts moving.
         </div>
 
         <div style={{ marginTop: 30, display: 'flex', gap: 10, flexWrap: 'wrap' }}>

@@ -53,7 +53,7 @@ const APPS = [
     facets: [
       ['Properties', '4 + storage'],
       ['Surface', 'Mobile-first'],
-      ['Handoff', '→ Eddie Morra'],
+      ['Handoff', '→ Property ops lane'],
     ],
     features: [
       'Per-unit guide authored once, versioned with the KB',

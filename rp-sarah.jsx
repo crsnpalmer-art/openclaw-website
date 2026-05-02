@@ -3,11 +3,11 @@
 
 const SARAH_STACK = [
   { n: '01', title: 'Phone intake', sub: 'Inbound voice line', body: 'Leasing and tenant calls enter a controlled intake path before anything reaches the operator.', accents: ['Inbound', 'Voice', 'Handoff'] },
-  { n: '02', title: 'Voice + AI', sub: 'Conversation layer', body: 'The Sarah persona handles speech, intent, and conversation control using a maintained property knowledge base.', accents: ['Voice AI', 'Intent', 'Persona'] },
+  { n: '02', title: 'Conversation', sub: 'Voice + AI layer', body: 'The caller gets a natural conversation, but the job is practical: understand intent, ask the next useful question, and stay inside the property knowledge base.', accents: ['Voice AI', 'Intent', 'Property KB'] },
   { n: '03', title: 'Backend layer', sub: 'Edge API', body: 'The API Sarah calls mid-conversation. It handles routing, policy checks, and the thin control layer between voice and data.', accents: ['Edge API', 'Routing', 'Policy'] },
   { n: '04', title: 'Data layer', sub: 'Hosted docs + tables', body: 'Tenant directory, vacancy state, tour queue, and call logs live in hosted operational docs. The backend reads and writes through a locked-down service identity.', accents: ['Hosted data', 'Call logs', 'Service identity'] },
   { n: '05', title: 'Knowledge base', sub: 'Canonical markdown KB', body: 'Source of truth lives in maintained property notes. A scheduled sync turns that into the live voice-agent knowledge base.', accents: ['Markdown', 'Scheduled sync', 'Single source'] },
-  { n: '06', title: 'Operator handoff', sub: 'Message queue', body: 'Each call can be handed to the operator with the right property context, outcome, and summary.', accents: ['Messaging', 'Per-call', 'Handoff'] },
+  { n: '06', title: 'Human handoff', sub: 'Message queue', body: 'Each call can be handed to a person with the right property context, outcome, and summary.', accents: ['Messaging', 'Per-call', 'Handoff'] },
 ];
 
 const SARAH_ENDPOINTS = [
@@ -21,11 +21,11 @@ const SARAH_ENDPOINTS = [
 ];
 
 const SARAH_BOUNDARIES = [
-  'No outbound calls — line is inbound only.',
-  'No outbound SMS — messaging is not part of the live caller flow.',
-  'No rent collection or payment negotiation — that\'s Tony Montana.',
-  'No maintenance dispatch — captured in the log, but dispatch stays with me.',
-  'No legal or eviction guidance — tagged for operator review and handed off.',
+  'Inbound only — Sarah answers and routes calls, but does not start outbound calls.',
+  'Tour and leasing requests can be captured, checked, and handed off with context.',
+  'Maintenance issues can be logged, but dispatch decisions stay human.',
+  'Rent, payment, legal, and eviction topics are tagged for review instead of handled automatically.',
+  'Sensitive or uncertain calls end with a summary and a human follow-up path.',
 ];
 
 const SERVICES = [
@@ -33,10 +33,10 @@ const SERVICES = [
   { name: 'Search layer', tag: 'Retrieval', body: 'Finds the right prior context without exposing the private index.', color: RP.blue },
   { name: 'Telegram', tag: 'Delivery + routing', body: 'Cron delivery, Sarah call routing, reminders.', color: RP.blue },
   { name: 'Gmail / Google', tag: 'Ingress', body: 'Gmail watch, inbox checks, Sheets-backed queues.', color: RP.pink },
-  { name: 'Notion', tag: 'Knowledge + reporting', body: 'Dashboards, Morra publishing, delinquency sync.', color: RP.ink },
+  { name: 'Notion', tag: 'Knowledge + reporting', body: 'Dashboards, publishing, and review surfaces.', color: RP.ink },
   { name: 'AppFolio', tag: 'Property backbone', body: 'Tenants, occupancy, WOs, vendors, reporting.', color: RP.orange },
   { name: 'Voice AI', tag: 'Sarah', body: 'Call handling, review analysis, and KB sync.', color: RP.yellow },
-  { name: 'Motion', tag: 'Tasking', body: 'Task creation around delinquency workflows.', color: RP.green },
+  { name: 'Motion', tag: 'Tasking', body: 'Task creation around follow-up workflows.', color: RP.green },
   { name: 'RPLY', tag: 'Reminder sidecar', body: 'Launchd-owned reminder path for business-text audiences.', color: RP.pink },
 ];
 
@@ -55,7 +55,7 @@ function Scheduler() {
           A split scheduler,<br/>not one giant loop.
         </h3>
         <p style={{ maxWidth: '62ch', fontSize: 17, lineHeight: 1.55, color: 'var(--rp-muted)', fontFamily: RP.body }}>
-          The scheduler is no longer one giant loop. Judgment-heavy work stays in the agent layer, while always-on services and script-heavy watchdogs live in macOS service management. That split keeps the reasoning layer for judgment and pushes repetitive plumbing into cheaper, sturdier paths.
+          The scheduler is no longer one giant loop. Judgment-heavy work stays in the agent layer, while always-on services and script-heavy checks run as simple system jobs. That split keeps attention for judgment and pushes repetitive plumbing into cheaper, sturdier paths.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 14, marginTop: 28 }}>
@@ -80,10 +80,10 @@ function Scheduler() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
             {[
-              { k: 'Cron runner', v: 'Shared entrypoint for agent-owned jobs. It handles delivery, cooldowns, and the handoff into the underlying prompt or script.' },
-              { k: 'Service manifest', v: 'Registry of macOS-managed jobs — schedule, role, and ownership without exposing runtime state.' },
-              { k: 'Runner state', v: 'Per-job state sink for last run, delivery, and repeated errors. Rebuildable from logs if lost.' },
-              { k: 'Scheduler registry', v: 'The recurring-job registry. Read this section as a shape-of-the-system view, not a frozen public count.' },
+              { k: 'Runner', v: 'The shared entrypoint for agent-owned jobs: deliver, cool down, hand off, and log what happened.' },
+              { k: 'Service list', v: 'The always-on jobs: schedule, role, and owner without needing a reasoning turn.' },
+              { k: 'State file', v: 'A small record of last run, delivery, and repeated errors. Rebuildable from logs if lost.' },
+              { k: 'Registry', v: 'The list of recurring work. Read it as a shape, not a frozen count.' },
             ].map((x, i) => (
               <div key={i} style={{ background: 'var(--rp-bg)', border: '3px solid var(--rp-ink)', boxShadow: '4px 4px 0 var(--rp-ink)', padding: '14px 16px' }}>
                 <div style={{ fontFamily: RP.mono, fontSize: 12, color: RP.blue, marginBottom: 6, wordBreak: 'break-word' }}>{x.k}</div>
@@ -100,10 +100,10 @@ function Scheduler() {
           </div>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 14 }}>
             {[
-              { state: 'Live', color: RP.green, k: 'Judgment scheduler', v: 'Recurring jobs that need judgment stay in the agent layer, grouped by owner lane.' },
-              { state: 'Live', color: RP.yellow, k: 'Service layer', v: 'Always-on plumbing and script-heavy watchdogs run as macOS services instead of agent turns.' },
-              { state: 'Ongoing', color: RP.blue, k: 'Cleanup rule', v: 'When a job is mostly plumbing, move it out of the agent layer. When it needs judgment, keep it with an agent.' },
-              { state: 'Retired', color: '#6a2a2a', k: 'Old reminder path', v: 'Legacy reminder logic stays retired unless there is a clear reason to bring it back.' },
+              { state: 'Live', color: RP.green, k: 'Judgment work', v: 'Recurring jobs that need interpretation stay in the agent layer, grouped by owner lane.' },
+              { state: 'Live', color: RP.yellow, k: 'Plumbing work', v: 'Always-on checks and script-heavy jobs run as system services instead of agent turns.' },
+              { state: 'Ongoing', color: RP.blue, k: 'Sorting rule', v: 'If it mostly checks or moves data, make it boring. If it needs judgment, keep it with an agent.' },
+              { state: 'Retired', color: '#6a2a2a', k: 'Old paths', v: 'Legacy routes stay retired unless there is a clear reason to bring them back.' },
             ].map((x, i) => (
               <div key={i} style={{ background: 'var(--rp-bg)', border: '3px solid var(--rp-ink)', boxShadow: '4px 4px 0 var(--rp-ink)', padding: '14px 16px', position: 'relative' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginBottom: 6 }}>
@@ -123,10 +123,10 @@ function Scheduler() {
               Rollback primitive
             </div>
             <div style={{ fontFamily: RP.display, fontSize: 28, letterSpacing: -1, textTransform: 'uppercase', lineHeight: 1 }}>
-              disable in one, enable in the other.
+              keep rollback boring.
             </div>
             <div style={{ fontFamily: RP.body, fontSize: 14, lineHeight: 1.5, color: 'rgba(236,229,208,0.75)', marginTop: 8, maxWidth: '60ch' }}>
-              Every migrated job can be flipped back in seconds — one path off, the other back on. No data loss, no redeploy, just a toggle. That cheapness is what makes the migration safe to run live.
+              Every migrated job should be easy to flip back: one path off, the other back on. No drama, no redeploy, no hidden state magic.
             </div>
           </div>
           <code style={{ fontFamily: RP.mono, fontSize: 12, color: RP.yellow, whiteSpace: 'normal', overflowWrap: 'anywhere' }}>service off · scheduler on</code>
@@ -152,15 +152,15 @@ function Sarah() {
           Sarah handles<br/>phone <span style={{ background: RP.pink, color: '#fff', padding: '0 10px', boxShadow: '3px 3px 0 var(--rp-ink)', display: 'inline-block', transform: 'rotate(-1deg)' }}>intake</span>.
         </h2>
         <p style={{ maxWidth: '58ch', fontSize: 19, lineHeight: 1.55, fontFamily: RP.body, color: 'var(--rp-ink)', marginTop: 18 }}>
-          A dedicated voice subsystem for leasing and tenant intake: phone answer, conversation control, backend checks, knowledge retrieval, and clean operator handoff. Inbound only, with clear boundaries.
+          A dedicated intake flow for leasing and tenant calls: answer the phone, understand the request, check the right source, and hand off the parts that still need a person.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, marginTop: 24 }}>
           {[
-            ['Toll-free US', 'Live number'],
-            ['7', 'Worker endpoints'],
-            ['4', 'Managed properties'],
-            ['3', 'Voice automations'],
+            ['Inbound', 'Call direction'],
+            ['7', 'Useful tools'],
+            ['4', 'Property contexts'],
+            ['Human', 'Final owner'],
           ].map(([big, tag], i) => (
             <div key={i} style={{ background: 'var(--rp-paper)', border: '3px solid var(--rp-ink)', boxShadow: '5px 5px 0 var(--rp-ink)', padding: '14px 16px' }}>
               <div style={{ fontFamily: RP.display, fontSize: 36, lineHeight: 0.9, letterSpacing: -1.5 }}>{big}</div>
@@ -195,7 +195,7 @@ function Sarah() {
         {/* Endpoints + Boundaries */}
         <div style={{ marginTop: 48, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
           <div>
-            <h3 style={{ margin: '0 0 14px', fontSize: 30, fontFamily: RP.display, letterSpacing: -1, textTransform: 'uppercase' }}>Worker endpoints</h3>
+            <h3 style={{ margin: '0 0 14px', fontSize: 30, fontFamily: RP.display, letterSpacing: -1, textTransform: 'uppercase' }}>What Sarah can check</h3>
             <div style={{ background: 'var(--rp-paper)', border: '3px solid var(--rp-ink)', boxShadow: '5px 5px 0 var(--rp-ink)' }}>
               {SARAH_ENDPOINTS.map(([ep, body], i) => (
                 <div key={ep} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 12, padding: '12px 16px', borderBottom: i === SARAH_ENDPOINTS.length - 1 ? 'none' : '1.5px dashed var(--rp-ink)' }}>
@@ -206,11 +206,11 @@ function Sarah() {
             </div>
           </div>
           <div>
-            <h3 style={{ margin: '0 0 14px', fontSize: 30, fontFamily: RP.display, letterSpacing: -1, textTransform: 'uppercase' }}>Boundaries</h3>
+            <h3 style={{ margin: '0 0 14px', fontSize: 30, fontFamily: RP.display, letterSpacing: -1, textTransform: 'uppercase' }}>Where humans stay in</h3>
             <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'grid', gap: 10 }}>
               {SARAH_BOUNDARIES.map((b, i) => (
                 <li key={i} style={{ background: 'var(--rp-paper)', border: '3px solid var(--rp-ink)', boxShadow: '3px 3px 0 var(--rp-ink)', padding: '12px 14px', fontFamily: RP.body, fontSize: 14, lineHeight: 1.45, position: 'relative', paddingLeft: 32 }}>
-                  <span style={{ position: 'absolute', left: 10, top: 12, fontFamily: RP.mono, fontSize: 12, color: RP.pink, fontWeight: 700 }}>✕</span>
+                  <span style={{ position: 'absolute', left: 10, top: 12, fontFamily: RP.mono, fontSize: 12, color: RP.pink, fontWeight: 700 }}>→</span>
                   {b}
                 </li>
               ))}

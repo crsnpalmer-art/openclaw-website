@@ -2,12 +2,12 @@
 // Workflow automation explainer section — what it is, how it works, the graph
 
 const EXPLAIN_LANES = [
-  { name: 'main', role: 'Default operator', cadence: 'interactive', blurb: 'Main is the interactive control lane. It handles direct operator work, coordination, and the default session behavior.', color: RP.pink },
-  { name: 'Eddie Morra', role: 'Work', cadence: 'property ops', blurb: 'Property operations and front-line work: AppFolio sync, work-order notifications, occupancy, leasing, tenant directory, and Sarah QA.', color: RP.orange },
-  { name: 'Michael Burry', role: 'Finance', cadence: 'weekly review', blurb: 'Financial analysis lane. Right now that means the weekly P&L summary.', color: RP.green },
-  { name: 'Tony Montana', role: 'Collections', cadence: 'scheduled follow-up', blurb: 'Collections lane for delinquency reports and mid-month follow-up.', color: RP.blue },
-  { name: 'Guardian Zero', role: 'Ops', cadence: 'reliability', blurb: 'Janitor + monitor lane. Session cleanup, log writing, history syncs, and operational reliability work orbit here while many watchdogs now live in launchd.', color: RP.yellow },
-  { name: 'Archive Monk', role: 'Archive', cadence: 'review loop', blurb: 'Keeps the system reflective and durable through review, context upkeep, and self-improvement.', color: RP.orange },
+  { name: 'Control lane', code: 'main', role: 'Default operator', cadence: 'interactive', blurb: 'Direct operator work, coordination, and the default path when a task does not belong somewhere narrower.', color: RP.pink },
+  { name: 'Property ops lane', code: 'Eddie Morra', role: 'Work', cadence: 'property ops', blurb: 'Front-line property work: AppFolio sync, work-order notifications, occupancy, leasing, tenant directory, and Sarah QA.', color: RP.orange },
+  { name: 'Finance lane', code: 'Michael Burry', role: 'Finance', cadence: 'weekly review', blurb: 'Financial review work, currently centered on weekly P&L summaries and money-specific analysis.', color: RP.green },
+  { name: 'Collections lane', code: 'Tony Montana', role: 'Collections', cadence: 'scheduled follow-up', blurb: 'Delinquency reports, mid-month follow-up, payment-plan review, and no-send collection drafts for human approval.', color: RP.blue },
+  { name: 'Reliability lane', code: 'Guardian Zero', role: 'Ops', cadence: 'health checks', blurb: 'Cleanup, monitoring, log writing, and reliability chores. Script-heavy watchdogs live outside the reasoning layer.', color: RP.yellow },
+  { name: 'Review lane', code: 'Archive Monk', role: 'Archive', cadence: 'review loop', blurb: 'Keeps the system reflective and durable through context upkeep, archive review, and self-improvement notes.', color: RP.orange },
 ];
 
 function WorkflowExplainer() {
@@ -36,7 +36,7 @@ function WorkflowExplainer() {
             <p style={{ margin: 0, fontSize: 18, lineHeight: 1.6, fontFamily: RP.body, color: 'var(--rp-ink)' }}>
               This is a local-first workflow automation pattern for recurring business work. It handles the messy middle:
               checking inputs, routing tasks, running reviews, syncing state, and escalating the parts that actually
-              needs a human.
+              need a human.
             </p>
             <p style={{ margin: '18px 0 0', fontSize: 18, lineHeight: 1.6, fontFamily: RP.body, color: 'var(--rp-ink)' }}>
               In plain English: instead of trusting a dozen disconnected dashboards,
@@ -64,7 +64,7 @@ function WorkflowExplainer() {
                 ['Verify', 'Checks, logs, and dry-runs make the result inspectable'],
                 ['Approve', 'Human judgment remains the owner for risky external effects'],
                 ['Improve', 'Feedback updates the workflow instead of living in someone’s head'],
-                ['Data shown here', 'public-safe labels only — private inventory removed'], 
+                ['Data note', 'This page keeps the shape of the workflow and leaves private routing off the page'], 
                 ['Read this as', 'A reusable operating pattern, not a product spec'],
               ].map(([k, v], i) => (
                 <li key={i} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(110px, 1fr))', gap: 10 }}>
@@ -83,7 +83,7 @@ function WorkflowExplainer() {
               The operating lanes
             </h3>
             <HandNote color={RP.pink} fontSize={22} maxWidth={260} style={{ transform: 'rotate(-2deg)' }}>
-              each name carries a job, not just a persona ↓
+              role first, nickname second ↓
             </HandNote>
           </div>
 
@@ -105,6 +105,9 @@ function WorkflowExplainer() {
                 </div>
                 <div style={{ fontFamily: RP.display, fontSize: 24, lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: -1, marginTop: 4, marginBottom: 10 }}>
                   {lane.name}
+                </div>
+                <div style={{ fontFamily: RP.mono, fontSize: 10, letterSpacing: 1.4, color: lane.color, textTransform: 'uppercase', marginBottom: 8 }}>
+                  local nickname · {lane.code}
                 </div>
                 <div style={{ fontFamily: RP.body, fontSize: 14, lineHeight: 1.45, color: 'var(--rp-muted)' }}>
                   {lane.blurb}
@@ -128,9 +131,9 @@ function WorkflowExplainer() {
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
             {[
-              { t: 'Always on', color: RP.orange, title: 'Platform layer', body: 'Gateway, browser control, Gmail watch, and Telegram routing stay up so operator work and background work can land in the right lane.' },
-              { t: 'Daily', color: RP.blue, title: 'Operating rhythm', body: 'AppFolio sync, work-order notifications, Notion dashboard sync, session cleanup, and daily log writing keep the property loop current.' },
-              { t: 'Weekly', color: RP.green, title: 'Planning + finance', body: 'Weekly P&L summary plus reflective review / self-improvement passes keep finance and context from drifting.' },
+              { t: 'Always on', color: RP.orange, title: 'Platform layer', body: 'The basic pipes stay up so operator work and background work can land in the right lane.' },
+              { t: 'Daily', color: RP.blue, title: 'Operating rhythm', body: 'Property checks, notifications, dashboard updates, cleanup, and daily notes keep the loop current.' },
+              { t: 'Weekly', color: RP.green, title: 'Planning + finance', body: 'Financial review and reflection passes keep planning, money, and context from drifting.' },
               { t: 'Monthly', color: RP.pink, title: 'Collections', body: 'Collections work shows up as deliberate scheduled follow-up rather than a constant noisy loop.' },
             ].map((s, i) => (
               <div key={i} style={{ background: 'var(--rp-paper)', border: '3px solid var(--rp-ink)', boxShadow: '5px 5px 0 var(--rp-ink)', padding: '18px 20px', position: 'relative' }}>
@@ -148,8 +151,8 @@ function WorkflowExplainer() {
             Managed properties
           </h3>
           <p style={{ margin: '0 0 24px', fontFamily: RP.body, fontSize: 15, color: 'var(--rp-muted)', maxWidth: '60ch' }}>
-              The four properties every schedule, lane, and voice endpoint is
-            acting on. Tuscaloosa / Northport, AL.
+            The real operating environment behind the example: four properties, live leasing questions,
+            maintenance handoffs, and recurring follow-up in Tuscaloosa / Northport, AL.
           </p>
           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 12 }}>
             {[

@@ -150,7 +150,7 @@ function Hero({ density }) {
               fontFamily: RP.mono, fontSize: 10.5, letterSpacing: 1.2, lineHeight: 1.6,
               color: 'var(--rp-muted)',
             }}>
-              Public-safe playbook view · private inventory removed.
+              Data note · this keeps the workflow shape and leaves private routing off the page.
             </div>
           </div>
         </div>

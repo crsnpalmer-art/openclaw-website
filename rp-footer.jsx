@@ -74,12 +74,12 @@ function Footer() {
               local, understandable, inspectable, and hard to break.
             </p>
             <p style={{ margin: '14px 0 0', fontSize: 15, lineHeight: 1.55, fontFamily: RP.body, color: 'var(--rp-muted)', maxWidth: '58ch' }}>
-              The public version keeps the structure and removes the inventory: no secrets, no private routing,
-              no internal identifiers — publish-safe by construction.
+              The useful part is the pattern: capture the input, assign an owner, prepare the next step,
+              verify the result, and keep a person in charge of anything that can affect someone else.
             </p>
 
             <div style={{ marginTop: 24, paddingTop: 14, borderTop: '1.5px solid rgba(15,13,11,0.28)', fontFamily: RP.mono, fontSize: 10.5, letterSpacing: 1.4, color: 'var(--rp-muted)', textTransform: 'uppercase' }}>
-              Public-safe summary · private inventory removed
+              Pattern map · built from a real operating setup
             </div>
           </div>
         </div>

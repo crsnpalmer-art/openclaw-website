@@ -1,7 +1,7 @@
 /* global React, RP, Chip, Grain, InkBlock, HandNote */
 // Cron schedule visual — a public-safe strip of the current automation rhythm
 
-// Derived from the runtime snapshot. Each entry: [hour 0-23.999, agent, label].
+// Representative public rhythm. Each entry: [hour 0-23.999, lane, label].
 // For */30 hourly loops we sample a representative slice; daily/weekly/monthly are pinned.
 const CRON_EVENTS = [
   // One dot per enabled scheduler job, labels generalized for public display.
@@ -33,12 +33,12 @@ const AGENT_COLOR = {
 };
 
 const AGENT_LABEL = {
-  main: 'main',
-  eddie: 'Eddie Morra',
-  burry: 'Michael Burry',
-  tony: 'Tony Montana',
-  zero: 'Guardian Zero',
-  monk: 'Archive Monk',
+  main: 'Control',
+  eddie: 'Property ops',
+  burry: 'Finance',
+  tony: 'Collections',
+  zero: 'Reliability',
+  monk: 'Review',
 };
 
 function CronSchedule() {
@@ -57,9 +57,8 @@ function CronSchedule() {
           Recurring work,<br/>laid across the day.
         </h3>
         <p style={{ maxWidth: '62ch', fontSize: 16, lineHeight: 1.55, color: 'var(--rp-muted)', fontFamily: RP.body, marginBottom: 28 }}>
-          The day laid flat. Each mark represents a kind of recurring work,
-          generalized enough for public display. Colored by owning lane, with
-          private routing details kept off the site.
+          The day laid flat. Each mark represents a kind of recurring work. The exact times matter less than the shape:
+          morning checks, daytime follow-up, evening review, and overnight cleanup.
         </p>
 
         {/* Hour strip */}
@@ -153,9 +152,9 @@ function CronSchedule() {
 
         <div style={{ marginTop: 20, display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: 12 }}>
           {[
-            { big: '03:00', tag: 'Quietest hour · auth monitor, cleanup, and backup territory' },
-            { big: '06–10', tag: 'Morning ramp · WO notifications, Morra, brief, Sarah router' },
-            { big: '18:10', tag: 'Evening wrap-up — the day compiles itself' },
+            { big: '03:00', tag: 'Quiet hour · cleanup, backup checks, and low-noise maintenance' },
+            { big: '06–10', tag: 'Morning ramp · property checks, notifications, briefings, intake routing' },
+            { big: '18:10', tag: 'Evening wrap-up · the day gets summarized and filed' },
           ].map((x, i) => (
             <div key={i} style={{ background: 'var(--rp-paper)', border: '3px solid var(--rp-ink)', boxShadow: '4px 4px 0 var(--rp-ink)', padding: '12px 14px' }}>
               <div style={{ fontFamily: RP.display, fontSize: 28, lineHeight: 0.9, letterSpacing: -1, color: RP.blue }}>{x.big}</div>
@@ -170,10 +169,10 @@ function CronSchedule() {
 
 // ─── Public shape — representative job families grouped by owning lane ─────────
 const CRON_REGISTRY = [
-  { agentId: 'main', label: 'main', role: 'Default operator', color: RP.pink, jobs: [
+  { agentId: 'main', label: 'Control lane', role: 'Default operator', code: 'main', color: RP.pink, jobs: [
     ['Dashboard sync', 'Daily'],
   ]},
-  { agentId: 'work', label: 'Eddie Morra', role: 'Work', color: RP.orange, jobs: [
+  { agentId: 'work', label: 'Property ops lane', role: 'Work', code: 'Eddie Morra', color: RP.orange, jobs: [
     ['Property sync', 'Daily'],
     ['Work-order notifications', 'Daily'],
     ['Occupancy report', 'Weekdays'],
@@ -182,19 +181,19 @@ const CRON_REGISTRY = [
     ['Tenant directory refresh', 'Monthly'],
     ['Sarah QA review', 'Daily'],
   ]},
-  { agentId: 'finance', label: 'Michael Burry', role: 'Finance', color: RP.green, jobs: [
+  { agentId: 'finance', label: 'Finance lane', role: 'Finance', code: 'Michael Burry', color: RP.green, jobs: [
     ['P&L summary', 'Weekly'],
   ]},
-  { agentId: 'collections', label: 'Tony Montana', role: 'Collections', color: RP.blue, jobs: [
+  { agentId: 'collections', label: 'Collections lane', role: 'Collections', code: 'Tony Montana', color: RP.blue, jobs: [
     ['Collections report', 'Monthly'],
     ['Mid-month follow-up', 'Monthly'],
   ]},
-  { agentId: 'ops', label: 'Guardian Zero', role: 'Ops', color: RP.yellow, jobs: [
+  { agentId: 'ops', label: 'Reliability lane', role: 'Ops', code: 'Guardian Zero', color: RP.yellow, jobs: [
     ['Session cleanup', 'Daily'],
     ['Work-order history sync', 'Monthly'],
     ['Daily log writer', 'Daily'],
   ]},
-  { agentId: 'archive', label: 'Archive Monk', role: 'Archive', color: RP.ink, jobs: [
+  { agentId: 'archive', label: 'Review lane', role: 'Archive', code: 'Archive Monk', color: RP.ink, jobs: [
     ['Archive review', 'Weekly'],
     ['Self-improvement review', 'Daily'],
   ]},
@@ -216,7 +215,7 @@ function CronRegistry() {
           Job families,<br/>by owning agent.
         </h3>
         <p style={{ maxWidth: '62ch', fontSize: 16, lineHeight: 1.55, color: 'var(--rp-muted)', fontFamily: RP.body, marginBottom: 28 }}>
-          This is a public-facing map of the scheduler, grouped by owning lane. It shows the shape of recurring work without publishing private routing details.
+          The useful idea is ownership. Recurring work gets a lane, a rough cadence, and a reason for existing.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16, alignItems: 'start' }}>
@@ -231,7 +230,7 @@ function CronRegistry() {
                 fontFamily: RP.mono, fontSize: 10, letterSpacing: 2, color: '#fff',
               }}>AGENT № 0{i + 1}</div>
               <div style={{ fontFamily: RP.mono, fontSize: 10, letterSpacing: 2, color: 'var(--rp-muted)', marginTop: 14 }}>
-                {agent.role.toUpperCase()} · public lane
+                {agent.role.toUpperCase()} · {agent.code}
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: 2, marginBottom: 12 }}>
                 <div style={{ fontFamily: RP.display, fontSize: 22, lineHeight: 0.95, textTransform: 'uppercase', letterSpacing: -1 }}>
@@ -262,9 +261,8 @@ function CronRegistry() {
           fontFamily: RP.mono, fontSize: 10.5, letterSpacing: 1.6, color: 'var(--rp-muted)',
           display: 'flex', flexWrap: 'wrap', gap: 18,
         }}>
-          <span>Source · sanitized operating map</span>
-          <span>View · public summary</span>
-          <span>Details · private inventory removed</span>
+          <span>Pattern · recurring work needs owners</span>
+          <span>Use this · when reminders keep slipping</span>
         </div>
       </div>
     </section>
@@ -326,7 +324,7 @@ function LaunchdRegistry() {
           Service families,<br/>around the runtime.
         </h3>
         <p style={{ maxWidth: '64ch', fontSize: 16, lineHeight: 1.55, color: 'var(--rp-muted)', fontFamily: RP.body, marginBottom: 28 }}>
-          The non-agent side of the split scheduler. This section shows the kinds of services around the runtime without publishing sensitive labels or host internals.
+          The non-agent side of the split scheduler. If a job is mostly plumbing, it does not need to consume the attention of the reasoning layer.
         </p>
 
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: 16, alignItems: 'start' }}>
@@ -375,9 +373,8 @@ function LaunchdRegistry() {
           fontFamily: RP.mono, fontSize: 10.5, letterSpacing: 1.6, color: 'var(--rp-muted)',
           display: 'flex', flexWrap: 'wrap', gap: 18,
         }}>
-          <span>Source · host service inventory</span>
-          <span>View · public summary</span>
-          <span>Labels · sanitized on purpose</span>
+          <span>Pattern · move plumbing out of judgment loops</span>
+          <span>Use this · for health checks and watchdogs</span>
           <span>Always-on checks · live</span>
         </div>
       </div>
