@@ -12,7 +12,7 @@ function Hero({ density }) {
 
   const stats = [
     ['01', 'Input layer'],
-    ['06', 'Operating lanes'],
+    ['07', 'Operating lanes'],
     ['05', 'Reusable patterns'],
     ['04', 'Guardrail loops'],
     ['01', 'Human final owner'],

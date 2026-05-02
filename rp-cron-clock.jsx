@@ -18,7 +18,7 @@ const CRON_EVENTS = [
   { h: 10.0, a: 'zero', label: 'Work-order history sync' },
   { h: 10.5, a: 'eddie', label: 'Lease renewal pipeline' },
   { h: 17.0, a: 'monk', label: 'Archive review' },
-  { h: 20.75, a: 'eddie', label: 'Sarah QA review' },
+  { h: 20.75, a: 'sarah', label: 'Sarah QA review' },
   { h: 23.0, a: 'zero', label: 'Daily log writer' },
   { h: 23.166, a: 'monk', label: 'Self-improvement review' },
 ];
@@ -26,6 +26,7 @@ const CRON_EVENTS = [
 const AGENT_COLOR = {
   main: RP.pink,
   eddie: RP.orange,
+  sarah: RP.pink,
   burry: RP.green,
   tony: RP.blue,
   zero: RP.yellow,
@@ -35,6 +36,7 @@ const AGENT_COLOR = {
 const AGENT_LABEL = {
   main: 'Control',
   eddie: 'Property ops',
+  sarah: 'Voice intake',
   burry: 'Finance',
   tony: 'Collections',
   zero: 'Reliability',
@@ -179,6 +181,11 @@ const CRON_REGISTRY = [
     ['Monday property sweep', 'Weekly'],
     ['Lease renewal pipeline', 'Weekly'],
     ['Tenant directory refresh', 'Monthly'],
+  ]},
+  { agentId: 'voice', label: 'Voice intake lane', role: 'Voice agent', code: 'Sarah', color: RP.pink, jobs: [
+    ['Inbound call handling', 'Live'],
+    ['Tour and leasing intake', 'Live'],
+    ['Call logging', 'Per call'],
     ['Sarah QA review', 'Daily'],
   ]},
   { agentId: 'finance', label: 'Finance lane', role: 'Finance', code: 'Michael Burry', color: RP.green, jobs: [

@@ -6,7 +6,7 @@ const GRAPH_NODES = [
   { id: 'cron', col: 0, row: 0, label: 'Scheduler', kind: 'trigger', blurb: 'Recurring work with named owners and clear lanes. The point is the shape: owner, cadence, reason.' },
   { id: 'launchd', col: 0, row: 1, label: 'System services', kind: 'trigger', blurb: 'Always-on platform checks and script-heavy jobs that do not need an agent turn.' },
   { id: 'tg', col: 0, row: 2, label: 'Telegram', kind: 'trigger', blurb: 'Operator surface and delivery sink. Human commands come in there; summaries and alerts go back out there.' },
-  { id: 'voice', col: 0, row: 3, label: 'Inbound Call', kind: 'trigger', blurb: 'An inbound leasing call is answered, classified, and routed into the right handoff path.' },
+  { id: 'voice', col: 0, row: 3, label: 'Inbound Call', kind: 'trigger', blurb: 'An inbound leasing or tenant call is answered, classified, and routed into the right handoff path.' },
   { id: 'gmail-watch', col: 0, row: 4, label: 'Inbox watch', kind: 'trigger', blurb: 'Inbox updates become work items: classify, route to the owning lane, draft or queue.' },
 
   // col 1 — orchestrator
@@ -16,10 +16,11 @@ const GRAPH_NODES = [
   // col 2 — agents (the real roster)
   { id: 'main', col: 2, row: 0, label: 'Control lane', kind: 'agent', blurb: 'Default operator. Interactive control, direct user work, and general orchestration.' },
   { id: 'eddie', col: 2, row: 1, label: 'Property ops lane', kind: 'agent', blurb: 'Property workflows, AppFolio sync, work-order notifications, occupancy reporting.' },
-  { id: 'burry', col: 2, row: 2, label: 'Finance lane', kind: 'agent', blurb: 'Weekly P&L readouts and finance-specific analysis.' },
-  { id: 'tony', col: 2, row: 3, label: 'Collections lane', kind: 'agent', blurb: 'Delinquency follow-up, payment-plan review, and no-send collection drafts.' },
-  { id: 'zero', col: 2, row: 4, label: 'Reliability lane', kind: 'agent', blurb: 'Cleanup, monitoring, log writing, and reliability chores.' },
-  { id: 'monk', col: 2, row: 5, label: 'Review lane', kind: 'agent', blurb: 'Archive review, context upkeep, and self-improvement passes.' },
+  { id: 'sarah-agent', col: 2, row: 2, label: 'Voice intake lane', kind: 'agent', blurb: 'Sarah as an operating lane: answers inbound calls, understands intent, checks property context, logs outcomes, and hands off uncertain or sensitive work.' },
+  { id: 'burry', col: 2, row: 3, label: 'Finance lane', kind: 'agent', blurb: 'Weekly P&L readouts and finance-specific analysis.' },
+  { id: 'tony', col: 2, row: 4, label: 'Collections lane', kind: 'agent', blurb: 'Delinquency follow-up, payment-plan review, and no-send collection drafts.' },
+  { id: 'zero', col: 2, row: 5, label: 'Reliability lane', kind: 'agent', blurb: 'Cleanup, monitoring, log writing, and reliability chores.' },
+  { id: 'monk', col: 2, row: 6, label: 'Review lane', kind: 'agent', blurb: 'Archive review, context upkeep, and self-improvement passes.' },
 
   // col 3 — model roles
   { id: 'reasoning', col: 3, row: 0.5, label: 'Reasoning', kind: 'model', blurb: 'Drafts, judgments, planning, and the hard calls.' },
@@ -31,7 +32,7 @@ const GRAPH_NODES = [
   { id: 'appfolio', col: 4, row: 0, label: 'AppFolio', kind: 'service', blurb: 'Property backbone — tenants, occupancy, work orders, vendors, reporting.' },
   { id: 'gmail', col: 4, row: 1, label: 'Gmail / Google', kind: 'service', blurb: 'Ingress + data layer — Gmail watch, inbox checks, Workspace docs, Sheets-backed queues for Sarah.' },
   { id: 'notion', col: 4, row: 2, label: 'Notion', kind: 'service', blurb: 'Dashboards, publishing, review notes, and reporting surfaces.' },
-  { id: 'sarah', col: 4, row: 3, label: 'Sarah (voice)', kind: 'service', blurb: 'Voice subsystem: telephony, voice AI, a backend layer, knowledge retrieval, and operator handoff. Inbound only.' },
+  { id: 'voice-stack', col: 4, row: 3, label: 'Voice stack', kind: 'service', blurb: 'The service side of Sarah: telephony, voice AI, backend tools, knowledge retrieval, and operator handoff.' },
   { id: 'motion', col: 4, row: 4, label: 'Motion', kind: 'service', blurb: 'Task creation around follow-up workflows.' },
   { id: 'rply', col: 4, row: 5, label: 'RPLY', kind: 'service', blurb: 'Reminder sidecar for business-text audiences.' },
 ];
@@ -39,27 +40,29 @@ const GRAPH_NODES = [
 const GRAPH_EDGES = [
   // triggers → gateway / runtime
   ['cron', 'gateway'], ['launchd', 'gateway'], ['tg', 'gateway'], ['gmail-watch', 'gateway'],
-  ['voice', 'sarah'],
+  ['voice', 'sarah-agent'],
   // gateway → runtime
   ['gateway', 'core'],
   // runtime → agents
-  ['core', 'main'], ['core', 'eddie'], ['core', 'burry'], ['core', 'tony'], ['core', 'zero'], ['core', 'monk'],
+  ['core', 'main'], ['core', 'eddie'], ['core', 'sarah-agent'], ['core', 'burry'], ['core', 'tony'], ['core', 'zero'], ['core', 'monk'],
   // agents → models
   ['main', 'reasoning'], ['main', 'fast'],
   ['eddie', 'reasoning'], ['eddie', 'coding'],
+  ['sarah-agent', 'reasoning'], ['sarah-agent', 'fast'],
   ['burry', 'reasoning'],
   ['tony', 'reasoning'], ['tony', 'fast'],
   ['zero', 'fast'],
   ['monk', 'search'], ['monk', 'fast'],
   // agents → services
-  ['eddie', 'appfolio'], ['eddie', 'gmail'], ['eddie', 'notion'], ['eddie', 'sarah'],
+  ['eddie', 'appfolio'], ['eddie', 'gmail'], ['eddie', 'notion'],
+  ['sarah-agent', 'voice-stack'], ['sarah-agent', 'gmail'], ['sarah-agent', 'appfolio'],
   ['burry', 'notion'],
   ['tony', 'appfolio'], ['tony', 'gmail'], ['tony', 'motion'],
   ['zero', 'gmail'], ['zero', 'rply'],
   ['monk', 'notion'],
   ['main', 'notion'], ['main', 'gmail'],
   // Sarah -> data
-  ['sarah', 'gmail'], ['sarah', 'appfolio'],
+  ['voice-stack', 'gmail'], ['voice-stack', 'appfolio'],
 ];
 
 const KIND_COLOR = {
@@ -93,7 +96,7 @@ function Graph() {
   });
 
   const width = padX * 2 + colWidth * 4 + nodeW;
-  const height = padY * 2 + rowHeight * 5 + nodeH + 20;
+  const height = padY * 2 + rowHeight * 6 + nodeH + 20;
 
   const selectedNode = GRAPH_NODES.find(n => n.id === selected);
 

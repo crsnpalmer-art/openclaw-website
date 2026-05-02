@@ -4,6 +4,7 @@
 const EXPLAIN_LANES = [
   { name: 'Control lane', code: 'main', role: 'Default operator', cadence: 'interactive', blurb: 'Direct operator work, coordination, and the default path when a task does not belong somewhere narrower.', color: RP.pink },
   { name: 'Property ops lane', code: 'Eddie Morra', role: 'Work', cadence: 'property ops', blurb: 'Front-line property work: AppFolio sync, work-order notifications, occupancy, leasing, tenant directory, and Sarah QA.', color: RP.orange },
+  { name: 'Voice intake lane', code: 'Sarah', role: 'Voice agent', cadence: 'inbound calls', blurb: 'Leasing and tenant intake over the phone: understand intent, check the property context, log the call, and hand off anything that needs a person.', color: RP.pink },
   { name: 'Finance lane', code: 'Michael Burry', role: 'Finance', cadence: 'weekly review', blurb: 'Financial review work, currently centered on weekly P&L summaries and money-specific analysis.', color: RP.green },
   { name: 'Collections lane', code: 'Tony Montana', role: 'Collections', cadence: 'scheduled follow-up', blurb: 'Delinquency reports, mid-month follow-up, payment-plan review, and no-send collection drafts for human approval.', color: RP.blue },
   { name: 'Reliability lane', code: 'Guardian Zero', role: 'Ops', cadence: 'health checks', blurb: 'Cleanup, monitoring, log writing, and reliability chores. Script-heavy watchdogs live outside the reasoning layer.', color: RP.yellow },
@@ -93,7 +94,7 @@ function WorkflowExplainer() {
                 background: 'var(--rp-paper)', border: '3px solid var(--rp-ink)',
                 padding: '18px 20px', position: 'relative',
                 boxShadow: '5px 5px 0 var(--rp-ink)',
-                transform: `rotate(${[-0.8, 0.6, -0.4, 0.8, -0.3, 0.5][i]}deg)`,
+                transform: `rotate(${[-0.8, 0.6, -0.5, -0.4, 0.8, -0.3, 0.5][i]}deg)`,
               }}>
                 <div style={{
                   position: 'absolute', top: -14, left: 14,
