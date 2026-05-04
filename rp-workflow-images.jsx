@@ -17,8 +17,8 @@ const OPS_STEPS = [
     eyebrow: 'Runtime',
     color: RP.green,
     headline: 'A local gateway controls the handoff.',
-    body: 'The wrapper-backed gateway starts at login, validates its environment, restarts on failure, and keeps work routed through one observable local entry point.',
-    bullets: ['Starts at login', 'Validates setup', 'Wrapper-backed gateway', 'Auto-restart on failure'],
+    body: 'The managed gateway starts at login, validates its environment, restarts on failure, and keeps work routed through one observable local entry point.',
+    bullets: ['Starts at login', 'Validates setup', 'Managed gateway', 'Auto-restart on failure'],
   },
   {
     id: 'agents',
@@ -112,6 +112,37 @@ const SARAH_CONTROLS = [
   ['Consent gate', 'Outbound tour reminders require explicit consent.'],
   ['Dry-run mode', 'Routing and reminders can be tested without sending messages.'],
   ['Observability', 'Health, metrics, logs, and queue counts stay visible.'],
+];
+
+const WORKFLOW_CHOICES = [
+  {
+    label: 'Sarah call',
+    body: 'A leasing or tenant call becomes an owned follow-up path.',
+    mode: 'sarah',
+    activeId: 'tour',
+    pattern: 'Caller -> Sarah -> Worker -> Queue -> Human gate',
+  },
+  {
+    label: 'Maintenance intake',
+    body: 'A resident issue gets captured, classified, logged, and routed.',
+    mode: 'sarah',
+    activeId: 'maintenance',
+    pattern: 'Resident -> Classify -> Log -> Ops follow-up',
+  },
+  {
+    label: 'Emergency alert',
+    body: 'Urgent calls skip the quiet path and make human review loud.',
+    mode: 'sarah',
+    activeId: 'emergency',
+    pattern: 'Caller -> Detect emergency -> Telegram -> Human response',
+  },
+  {
+    label: 'Recurring ops',
+    body: 'Scheduled checks keep dashboards, reminders, and reviews moving.',
+    mode: 'ops',
+    activeId: 'schedule',
+    pattern: 'Cron -> Gateway -> Lane -> Result -> Log',
+  },
 ];
 
 function ArrowBetween() {
@@ -405,6 +436,45 @@ function InteractiveWorkflowImages() {
         <p style={{ margin: '0 0 24px', maxWidth: '74ch', fontFamily: RP.body, fontSize: 18, lineHeight: 1.58, color: 'var(--rp-muted)' }}>
           The diagrams are rebuilt as interactive webpage sections. Use the operations flow to understand the automation pattern, then switch to Sarah to trace exactly how a phone call or SMS becomes a logged result.
         </p>
+
+        <div style={{
+          margin: '0 0 24px',
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+          gap: 12,
+        }}>
+          {WORKFLOW_CHOICES.map((choice) => (
+            <button
+              key={choice.label}
+              type="button"
+              onClick={() => {
+                setMode(choice.mode);
+                if (choice.mode === 'sarah') setSarahActive(choice.activeId);
+                else setOpsActive(choice.activeId);
+              }}
+              style={{
+                border: '2.5px solid var(--rp-ink)',
+                background: 'rgba(255,255,255,0.34)',
+                boxShadow: '4px 4px 0 var(--rp-ink)',
+                padding: 16,
+                textAlign: 'left',
+                cursor: 'pointer',
+                color: 'var(--rp-ink)',
+              }}
+            >
+              <div style={{ fontFamily: RP.mono, fontSize: 10, letterSpacing: 1.8, color: RP.pink, textTransform: 'uppercase' }}>
+                Choose a workflow
+              </div>
+              <div style={{ marginTop: 8, fontFamily: RP.display, fontSize: 25, lineHeight: 0.95, letterSpacing: -0.8, textTransform: 'uppercase' }}>
+                {choice.label}
+              </div>
+              <p style={{ margin: '10px 0 0', fontFamily: RP.body, fontSize: 14, lineHeight: 1.45, color: 'var(--rp-muted)' }}>{choice.body}</p>
+              <div style={{ marginTop: 12, paddingTop: 10, borderTop: '1.5px dashed var(--rp-ink)', fontFamily: RP.mono, fontSize: 10, letterSpacing: 1.2, lineHeight: 1.5 }}>
+                {choice.pattern}
+              </div>
+            </button>
+          ))}
+        </div>
 
         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10, marginBottom: 18 }}>
           {tabs.map((tab) => (
